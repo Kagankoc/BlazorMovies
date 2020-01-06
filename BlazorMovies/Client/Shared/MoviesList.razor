@@ -1,0 +1,46 @@
+﻿@inject IJSRuntime js
+@inject NavigationManager navigationManager
+@inject IMovieRepository  moviesRepository
+
+<div class="movies-container">
+    <GenericList List="Movies">
+        <ElementTemplate Context="movie">
+            <IndividiualMovie Movie="movie"
+                              DeleteMovie="DeleteMovie" @key="movie.Id"/>
+
+
+        </ElementTemplate>
+
+    </GenericList>
+
+</div>
+
+
+
+
+@code {
+
+
+    [Parameter] public List<Movie> Movies { get; set; }
+
+
+    private async Task DeleteMovie(Movie movie)
+    {
+        await js.MyFunction("custom messager");
+        var confirmed = await js.Confirm($"Are you sure you want to delete {movie.Title}?");
+
+        if (confirmed)
+        {
+            await moviesRepository.DeleteMovie(movie.Id);
+        }
+    }
+    private void EditMovie(Movie movie)
+    {
+        navigationManager.NavigateTo("/movies/edit/"+movie.Id);
+
+    }
+
+
+
+
+}
